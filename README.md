@@ -3,6 +3,9 @@
 QR Alert is an application I built for an event at a high school. <br/>
 It allows for the technical team to distribute QR codes in rooms which people can scan in case of technical difficulties in these rooms. When scanned, an alert will notify the technical team with the rooms id.
 
+## Demo
+A demo can be found [here](https://qr.tobias-g.de)
+
 ## Views
 There are two pages for administrators and one which is reachabe through QR-Codes:
 - `/spectate` - Technical screen which is green when no issues are reported, otherwise it shows the list of affected rooms and a red background.
