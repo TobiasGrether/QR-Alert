@@ -13,7 +13,7 @@ QR code are probably the easiest way for anyone to interact with a system. Nowad
 
 ## Views
 There are two pages for administrators and one which is reachabe through QR-Codes:
-- `/admin//spectate` - Technical screen which is green when no issues are reported, otherwise it shows the list of affected rooms and a red background.
+- `/admin/spectate` - Technical screen which is green when no issues are reported, otherwise it shows the list of affected rooms and a red background.
 - `/admin/overview` - Management screen, allows for managing rooms, generating PDFs etc
 - `/alert` - URL which is opened by the client
 
