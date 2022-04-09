@@ -18,7 +18,7 @@ function Alert(){
 
     return <Center mt={"10%"}>
         {
-            success ? <>Das Technikteam wurde informiert</> : <>Es gab einen Fehler beim Benachrichtigen des Technikteams</>
+            success ? <>Technical issue was reported successfully</> : <>There was a technical error while reporting the issue</>
         }
     </Center>
 }

@@ -1,17 +1,28 @@
 import jsPDF from "jspdf";
 import QRCode from "qrcode"
 
-async function createPDF(rooms, baseURL) {
+export async function generateList(rooms, baseURL) {
     let pdf = new jsPDF()
     for (const room of rooms){
         let page = pdf.insertPage(1)
-        page.text("Raum " + room.name, 90, 30)
 
-        const uri = await QRCode.toDataURL(baseURL + "/alert?room=" + room.name)
-        page.addImage(uri, 'png', 35, 50, 140, 140)
+        await createPage(room.name, page, baseURL)
     }
 
-    pdf.save("file.pdf")
+    pdf.save("alertCodes.pdf")
 }
 
-export default createPDF
+export async function generateSingle(roomName, baseUrl){
+    let pdf = new jsPDF()
+
+    await createPage(roomName, pdf, baseUrl)
+
+    pdf.save(roomName + ".pdf");
+}
+
+async function createPage(roomName, pdf, baseURL){
+    pdf.text("Room " + roomName, 90, 30)
+
+    const uri = await QRCode.toDataURL(baseURL + "/alert?room=" + roomName)
+    pdf.addImage(uri, 'png', 35, 50, 140, 140)
+}

@@ -3,10 +3,10 @@ import {useState} from "react";
 import {BACKEND_URL, SECURITY_PREFIX} from "../Variables";
 import {toast} from "react-hot-toast";
 
-function CreateRoomComponent(props) {
+function CreateRoomComponent() {
     let [text, setText] = useState("")
     return <>
-        <Input onChange={e => setText(e.target.value)} placeholder="Raum-Name"/>
+        <Input onChange={e => setText(e.target.value)} placeholder="Room name"/>
         <Button onClick={() => createRoom(text)}>Raum erstellen</Button>
     </>
 }
@@ -17,8 +17,8 @@ function createRoom(name){
         method: "POST",
         mode: "no-cors"
     }), {
-        success: "Raum erfolgreich erstellt",
-        error: "Ein fehler ist beim erstellen des raumes aufgetreten"
+        success: "Room created successfully",
+        error: "An error was reported while creating that room. Make sure the room does not already exist."
     })
 }
 

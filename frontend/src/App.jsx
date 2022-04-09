@@ -1,7 +1,7 @@
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Overview from "./pages/Overview";
 import Alert from "./pages/Alert";
-import {ChakraProvider, useColorMode} from "@chakra-ui/react";
+import {ChakraProvider} from "@chakra-ui/react";
 import {Toaster} from "react-hot-toast";
 import Spectator from "./pages/Spectator";
 import theme from "./Theme";
@@ -16,13 +16,12 @@ function App() {
                         <Route path="/alert">
                             <Alert/>
                         </Route>
-                        <Route path="/spectate">
+                        <Route path="/admin/spectate">
                             <Spectator/>
                         </Route>
-                        <Route path="/">
+                        <Route path="/admin/overview">
                             <Overview/>
                         </Route>
-
                     </Switch>
                 </BrowserRouter>
             </ChakraProvider>

@@ -3,6 +3,10 @@
 QR Alert is an application I built for an event at a high school. <br/>
 It allows for the technical team to distribute QR codes in rooms which people can scan in case of technical difficulties in these rooms. When scanned, an alert will notify the technical team with the rooms id.
 
+## How it works
+Administrators can use the administrator interface to add and manage rooms. They can then generate a PDF with QR Codes. Every QR code will, when scanned, alert the technical team. 
+The technical team can use the spectator screen (`/spectate`) to have a very simple overview of rooms with technical errors. The background will be green if no room has a technical error reported. It will change to red as soon as there is a room with an error. In addition, it shows a list of all rooms that are currently in an error stage.
+
 ## Views
 There are two pages for administrators and one which is reachabe through QR-Codes:
 - `/spectate` - Technical screen which is green when no issues are reported, otherwise it shows the list of affected rooms and a red background.

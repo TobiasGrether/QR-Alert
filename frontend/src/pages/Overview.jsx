@@ -11,13 +11,13 @@ import {
     Td,
     Th,
     Thead,
-    Tr, useColorMode
+    Tr
 } from "@chakra-ui/react";
 import {HamburgerIcon} from "@chakra-ui/icons";
 import {BACKEND_URL, SECURITY_PREFIX, WS_SECURITY_PREFIX} from "../Variables";
 import {useEffect, useState} from "react";
 import CreateRoomComponent from "../components/CreateRoomComponent";
-import createPDF from "./Export";
+import {generateList, generateSingle} from "./Export";
 import useWebSocket from "react-use-websocket";
 import {toast} from "react-hot-toast";
 
@@ -27,8 +27,8 @@ function sendRoomStatusChange(name, status) {
         method: 'PATCH',
         body: "{}",
     }).catch(e => console.log(e)), {
-        success: "Status erfolgreich geändert",
-        error: "Es ist bei der Änderung ein Fehler aufgetreten"
+        success: "Status changed successfully",
+        error: "There was an error while changing the status"
     })
 }
 
@@ -37,17 +37,16 @@ function Overview() {
     const [baseURL, setBaseURL] = useState("")
 
     const {lastMessage} = useWebSocket(WS_SECURITY_PREFIX + '://' + BACKEND_URL + 'websocket', {
-        shouldReconnect: (closeEvent) => true
+        shouldReconnect: true
     })
 
     useEffect(() => {
         if (lastMessage !== null) {
             let data = lastMessage.data
             const json = JSON.parse(data);
-            console.log(json)
             switch (json.intent) {
                 case "alert": {
-                    toast.error(json.targetRoom.name + " hat ein technisches Problem!")
+                    toast.error(json.targetRoom.name + " has a technical issue!")
                 }
                     break;
                 case "set_all": {
@@ -71,14 +70,14 @@ function Overview() {
                 <Button onClick={() => setCreateOpen(true)} float="left" mr="10px">
                     Add Room
                 </Button>
-                <Button onClick={() => createPDF(rooms, baseURL)} float="left" mb="10px" mr="10px">
+                <Button onClick={() => generateList(rooms, baseURL)} float="left" mb="10px" mr="10px">
                     Create PDF
                 </Button>
                 <Input float="left" width="400px" placeholder="Basis-URL" onChange={e => {
                     setBaseURL(e.target.value)
                 }}/>
                 <Table>
-                    <TableCaption>Raumübersicht</TableCaption>
+                    <TableCaption>Overview</TableCaption>
                     <Thead>
                         <Tr>
                             <Th>Name</Th>
@@ -99,7 +98,7 @@ function Overview() {
                                 </Td>
                                 <Td align={"right"}>
                                     <Menu>
-                                        <MenuButton as={Button} rightIcon={<HamburgerIcon/>}>Bearbeiten</MenuButton>
+                                        <MenuButton as={Button} rightIcon={<HamburgerIcon/>}>Edit</MenuButton>
 
                                         <MenuList>
                                             <MenuItem onClick={() => {
@@ -107,18 +106,21 @@ function Overview() {
                                                     method: "DELETE"
                                                 })
                                             }
-                                            }>Raum löschen</MenuItem>
+                                            }>Delete Room</MenuItem>
+
+                                            <MenuItem onClick={() => {
+                                                generateSingle(element.name, baseURL)
+                                            }}>Generate PDF page</MenuItem>
                                             <MenuItem
                                                 onClick={() => {
                                                     let newStatus = element.status === "ALERT" ? "NONE" : "ALERT"
                                                     sendRoomStatusChange(element.name, newStatus)
-                                                }}>Raumstatus
-                                                wechseln</MenuItem>
+                                                }}>Toggle Status</MenuItem>
                                         </MenuList>
                                     </Menu>
 
                                     <Button ml="15px"
-                                            onClick={() => sendRoomStatusChange(element.name, "NONE")}>Zurücksetzen</Button>
+                                            onClick={() => sendRoomStatusChange(element.name, "NONE")}>Reset</Button>
                                 </Td>
                             </Tr>
                         })}

@@ -3,10 +3,10 @@ import {BACKEND_URL, WS_SECURITY_PREFIX} from "../Variables";
 import {useEffect, useState} from "react";
 import {Box, Center, Text} from "@chakra-ui/react";
 
-function Spectator(){
+function Spectator() {
     const [rooms, setRooms] = useState([])
     const {lastMessage} = useWebSocket(WS_SECURITY_PREFIX + '://' + BACKEND_URL + 'websocket', {
-        shouldReconnect: (closeEvent) => true
+        shouldReconnect: true
     })
 
     useEffect(() => {
@@ -14,16 +14,14 @@ function Spectator(){
             let data = lastMessage.data
             const json = JSON.parse(data);
 
-            console.log(json)
             switch (json.intent) {
                 case "set_all": {
                     let alertRooms = []
-                    for(const index in json.targetRoom){
+                    for (const index in json.targetRoom) {
                         let room = json.targetRoom[index]
 
-                        if(room.status === "ALERT"){
+                        if (room.status === "ALERT") {
                             alertRooms.push(room)
-                            console.log("Added room " + room.name)
                         }
                     }
 
@@ -34,24 +32,24 @@ function Spectator(){
         }
     }, [lastMessage])
 
-    console.log(rooms)
-
     return <Box height="1000px" width="100%" backgroundColor={rooms.length === 0 ? "green.400" : "red"}>
         <Center pt="20%">
             {
                 rooms.length === 0 ? <Text fontSize="30px">
-                    Alles in Ordnung. Keine Technischen Fehler gemeldet.
-                </Text> : <Text fontSize="30px">Technische Fehler in den folgenden Räumen:</Text>
+                    No technical errors reported
+                </Text> : <Text fontSize="30px">Technical errors in the following rooms:</Text>
             }
 
         </Center>
-        <Center mt="20px">
-            {
-                rooms.map(function(val){
-                    return <Text key={val.name} fontSize="25px"> &bull; {val.name}</Text>
-                })
-            }
-        </Center>
+        {
+            rooms.map(function (val) {
+                return <Center mt="20px">
+                    <Text key={val.name} fontSize="25px">
+                        &bull; {val.name}
+                    </Text>
+                </Center>
+            })
+        }
     </Box>
 }
 
