@@ -5,10 +5,7 @@ import de.tobiasgrether.qr.object.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +22,6 @@ public class DatabaseManager {
         } catch (Throwable t) {
             logger.error("Error while setting up database", t);
         }
-
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             QRBackend.getInstance().getDatabaseManager().pushRooms(QRBackend.getInstance().getRoomManager().getRooms());
@@ -47,7 +43,7 @@ public class DatabaseManager {
         HashSet<Room> result = new HashSet<>();
         try {
             Statement stmt = this.connection.createStatement();
-            ResultSet resultSet = stmt.executeQuery("SELECT * FROM  Rooms");
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM Rooms");
 
             while (resultSet.next()) {
                 result.add(new Room(resultSet.getString("name"), Room.Status.values()[resultSet.getInt("status")]));
@@ -61,17 +57,21 @@ public class DatabaseManager {
 
     public void pushRooms(Set<Room> rooms) {
         try {
-            Statement stmt = this.connection.createStatement();
             for (Room room : rooms) {
-                stmt.executeUpdate("INSERT INTO Rooms(name, status) VALUES ('" + room.getName() + "', " + room.getStatus().ordinal() + ") ON CONFLICT(name) DO UPDATE SET name = '" + room.getName() + "', status = " + room.getStatus().ordinal());
+                PreparedStatement stmt = this.connection.prepareStatement("INSERT INTO Rooms(name, status) VALUES (?, ?) ON CONFLICT(name) DO UPDATE SET name = ?, status = ?");
+                stmt.setString(0, room.getName());
+                stmt.setInt(1, room.getStatus().ordinal());
+                stmt.setString(2, room.getName());
+                stmt.setInt(3, room.getStatus().ordinal());
+
+                stmt.executeQuery();
+                stmt.close();
             }
-            stmt.close();
+
             logger.info("Data upload completed.");
         } catch (Throwable t) {
             logger.error("Error while uploading data", t);
         }
-
-
     }
 
     public void close() {
@@ -80,6 +80,5 @@ public class DatabaseManager {
         } catch (Throwable t) {
             logger.error("Error while stopping database", t);
         }
-
     }
 }
