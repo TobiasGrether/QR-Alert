@@ -37,7 +37,7 @@ function Overview() {
     const [baseURL, setBaseURL] = useState("")
 
     const {lastMessage} = useWebSocket(WS_SECURITY_PREFIX + '://' + BACKEND_URL + 'websocket', {
-        shouldReconnect: true
+        shouldReconnect: () => true
     })
 
     useEffect(() => {

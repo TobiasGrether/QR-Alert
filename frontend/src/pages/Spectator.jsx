@@ -6,7 +6,7 @@ import {Box, Center, Text} from "@chakra-ui/react";
 function Spectator() {
     const [rooms, setRooms] = useState([])
     const {lastMessage} = useWebSocket(WS_SECURITY_PREFIX + '://' + BACKEND_URL + 'websocket', {
-        shouldReconnect: true
+        shouldReconnect: () => true
     })
 
     useEffect(() => {
